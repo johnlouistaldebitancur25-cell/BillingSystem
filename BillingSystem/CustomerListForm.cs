@@ -8,9 +8,9 @@ using System.Windows.Forms;
 
 namespace BillingSystem
 {
-    public partial class Form1 : Form
+    public partial class CustomerListForm : Form
     {
-        public Form1()
+        public CustomerListForm()
         {
             InitializeComponent();
         }
