@@ -1,24 +1,24 @@
 ﻿using MySql.Data.MySqlClient;
 using BillingSystem.Database;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
-using System.Drawing;
-using System.Text;
 using System.Windows.Forms;
 
 namespace BillingSystem
 {
     public partial class CustomerListForm : Form
     {
+        // Step 1.1 — Field to track the selected CustomerID
+        // 0 means no customer is currently selected.
+        private int _selectedCustomerId = 0;
+
         public CustomerListForm()
         {
             InitializeComponent();
-            ConfigureDataGridView(); // Step 5.4 — Bind DataGridView columns on initialization
+            ConfigureDataGridView();
+            this.Load += CustomerListForm_Load;
         }
 
-        // Step 5.4 — Map DataGridView columns to database column names
         private void ConfigureDataGridView()
         {
             dgvCustomers.AutoGenerateColumns = false;
@@ -30,27 +30,142 @@ namespace BillingSystem
             dgvCustomers.Columns["Balance"].DataPropertyName = "Balance";
         }
 
-        // Step 4.4 — Load customers when form opens
         private void CustomerListForm_Load(object sender, EventArgs e)
         {
             LoadCustomers();
+        }
+
+        // Step 1.2 — Capture CustomerID whenever selected row changes
+        private void dgvCustomers_SelectionChanged(object sender, EventArgs e)
+        {
+            // If no row is selected (e.g., grid is cleared or empty), reset selection
+            if (dgvCustomers.CurrentRow == null || dgvCustomers.SelectedRows.Count == 0)
+            {
+                _selectedCustomerId = 0;
+                return;
+            }
+
+            // Read the CustomerID value from the selected row
+            var idCell = dgvCustomers.CurrentRow.Cells["CustomerID"].Value;
+
+            if (idCell != null && int.TryParse(idCell.ToString(), out int id))
+            {
+                _selectedCustomerId = id;
+            }
+            else
+            {
+                _selectedCustomerId = 0;
+            }
+        }
+
+        // Step 1.4 — Open Edit Form when double-clicking a data row
+        private void dgvCustomers_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
+        {
+            // e.RowIndex is -1 when column header is double-clicked — ignore it
+            if (e.RowIndex < 0) return;
+
+            OpenEditForm();
+        }
+
+        // Step 3.3 — Open AddCustomerForm in Edit Mode
+        private void OpenEditForm()
+        {
+            if (_selectedCustomerId == 0)
+            {
+                MessageBox.Show("Please select a customer to edit.",
+                    "No Selection", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            // Open AddCustomerForm in EDIT mode, passing the selected CustomerID
+            AddCustomerForm editForm = new AddCustomerForm(_selectedCustomerId);
+
+            // Refresh the grid automatically once the edit form closes
+            editForm.FormClosed += (s, args) => LoadCustomers();
+
+            editForm.ShowDialog(this);
         }
 
         private void btnAdd_Click(object sender, EventArgs e)
         {
             AddCustomerForm addCustomerForm = new AddCustomerForm();
             addCustomerForm.ShowDialog();
-            LoadCustomers();   // Refreshes the grid when AddCustomerForm closes
+            LoadCustomers();
         }
 
-        // Step 5.2 — Search Button Click Event
+        // Step 5.2 — Confirm Before Deleting
+        private void btnDelete_Click(object sender, EventArgs e)
+        {
+            // Step 1: Make sure a customer is selected
+            if (_selectedCustomerId == 0)
+            {
+                MessageBox.Show("Please select a customer to delete.",
+                    "No Selection", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            // Step 2: Confirm before deleting — this cannot be undone
+            DialogResult confirm = MessageBox.Show(
+                "Are you sure you want to delete this customer?\n" +
+                "All billing records for this customer will also be deleted.",
+                "Confirm Delete",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Warning);
+
+            // Step 3: Only delete if the user clicked Yes
+            if (confirm == DialogResult.Yes)
+            {
+                DeleteCustomer(_selectedCustomerId);
+            }
+            // If the user clicked No, do nothing — the record is preserved
+        }
+
+        // Step 5.1 — Execute Parameterized DELETE Statement
+        private void DeleteCustomer(int customerId)
+        {
+            try
+            {
+                using (var conn = DatabaseConnection.GetConnection())
+                {
+                    conn.Open();
+
+                    // Parameterized DELETE — removes exactly one row
+                    string sql = "DELETE FROM Customers WHERE CustomerID = @CustomerID;";
+
+                    using (var cmd = new MySqlCommand(sql, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@CustomerID", customerId);
+
+                        int rowsAffected = cmd.ExecuteNonQuery();
+
+                        if (rowsAffected > 0)
+                        {
+                            MessageBox.Show("Customer deleted successfully.",
+                                "Deleted", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                            LoadCustomers();           // Refresh the grid
+                        }
+                        else
+                        {
+                            MessageBox.Show("Customer could not be deleted. It may no longer exist.",
+                                "Delete Failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error deleting customer:\n{ex.Message}",
+                    "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
         private void btnSearch_Click(object sender, EventArgs e)
         {
             string keyword = txtSearch.Text.Trim();
 
             if (string.IsNullOrEmpty(keyword))
             {
-                // Empty search box → show all customers again
                 LoadCustomers();
             }
             else
@@ -59,17 +174,15 @@ namespace BillingSystem
             }
         }
 
-        // Step 5.3 — Enter Keypress Event Handler
         private void txtSearch_KeyPress(object sender, KeyPressEventArgs e)
         {
             if (e.KeyChar == (char)Keys.Enter)
             {
-                e.Handled = true; // Suppress Windows beep sound
+                e.Handled = true;
                 btnSearch_Click(sender, e);
             }
         }
 
-        // Step 4.3 — Write the LoadCustomers Method
         private void LoadCustomers()
         {
             try
@@ -105,7 +218,6 @@ namespace BillingSystem
             }
         }
 
-        // Step 5.1 — Write the SearchCustomers Method
         private void SearchCustomers(string keyword)
         {
             try
@@ -114,7 +226,6 @@ namespace BillingSystem
                 {
                     conn.Open();
 
-                    // Parameterized SELECT with WHERE ... LIKE
                     string sql = @"SELECT CustomerID,
                                           FullName,
                                           Address,
@@ -130,7 +241,6 @@ namespace BillingSystem
 
                     using (var cmd = new MySqlCommand(sql, conn))
                     {
-                        // %keyword% matches the search text anywhere in the column
                         cmd.Parameters.AddWithValue("@keyword", $"%{keyword}%");
 
                         using (var adapter = new MySqlDataAdapter(cmd))
@@ -151,7 +261,6 @@ namespace BillingSystem
             }
         }
 
-        // Helper method to keep DataGridView columns properly formatted
         private void ApplyGridFormatting(DataTable dt)
         {
             dgvCustomers.DataSource = dt;
@@ -177,6 +286,10 @@ namespace BillingSystem
                 dgvCustomers.Columns["Email"].FillWeight = 110;
                 dgvCustomers.Columns["Balance"].FillWeight = 80;
             }
+
+            // Ensures no row is automatically selected when loading/reloading data
+            dgvCustomers.ClearSelection();
+            _selectedCustomerId = 0;
         }
     }
 }
