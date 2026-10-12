@@ -7,20 +7,20 @@
       "RelativeMoniker": "D:0:0:{C831D76E-76DD-FBDA-97FF-10EC626EB075}|BillingSystem\\BillingSystem.csproj|solutionrelative:billingsystem\\customerlistform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{C831D76E-76DD-FBDA-97FF-10EC626EB075}|BillingSystem\\BillingSystem.csproj|c:\\users\\p6900\\source\\repos\\main\\billingsystem\\customerlistform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
+      "AbsoluteMoniker": "D:0:0:{C831D76E-76DD-FBDA-97FF-10EC626EB075}|BillingSystem\\BillingSystem.csproj|C:\\Users\\p6900\\source\\repos\\main\\billingsystem\\customerlistform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
       "RelativeMoniker": "D:0:0:{C831D76E-76DD-FBDA-97FF-10EC626EB075}|BillingSystem\\BillingSystem.csproj|solutionrelative:billingsystem\\customerlistform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{C831D76E-76DD-FBDA-97FF-10EC626EB075}|BillingSystem\\BillingSystem.csproj|c:\\users\\p6900\\source\\repos\\main\\billingsystem\\addcustomerform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{C831D76E-76DD-FBDA-97FF-10EC626EB075}|BillingSystem\\BillingSystem.csproj|solutionrelative:billingsystem\\addcustomerform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{C831D76E-76DD-FBDA-97FF-10EC626EB075}|BillingSystem\\BillingSystem.csproj|c:\\users\\p6900\\source\\repos\\main\\billingsystem\\frmanalytics.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
+      "RelativeMoniker": "D:0:0:{C831D76E-76DD-FBDA-97FF-10EC626EB075}|BillingSystem\\BillingSystem.csproj|solutionrelative:billingsystem\\frmanalytics.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{C831D76E-76DD-FBDA-97FF-10EC626EB075}|BillingSystem\\BillingSystem.csproj|C:\\Users\\p6900\\source\\repos\\main\\billingsystem\\addcustomerform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
-      "RelativeMoniker": "D:0:0:{C831D76E-76DD-FBDA-97FF-10EC626EB075}|BillingSystem\\BillingSystem.csproj|solutionrelative:billingsystem\\addcustomerform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
+      "AbsoluteMoniker": "D:0:0:{C831D76E-76DD-FBDA-97FF-10EC626EB075}|BillingSystem\\BillingSystem.csproj|c:\\users\\p6900\\source\\repos\\main\\billingsystem\\frmanalytics.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C831D76E-76DD-FBDA-97FF-10EC626EB075}|BillingSystem\\BillingSystem.csproj|solutionrelative:billingsystem\\frmanalytics.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{C831D76E-76DD-FBDA-97FF-10EC626EB075}|BillingSystem\\BillingSystem.csproj|c:\\users\\p6900\\source\\repos\\main\\billingsystem\\addcustomerform.designer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{C831D76E-76DD-FBDA-97FF-10EC626EB075}|BillingSystem\\BillingSystem.csproj|solutionrelative:billingsystem\\addcustomerform.designer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{C831D76E-76DD-FBDA-97FF-10EC626EB075}|BillingSystem\\BillingSystem.csproj|c:\\users\\p6900\\source\\repos\\main\\billingsystem\\frmanalytics.designer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C831D76E-76DD-FBDA-97FF-10EC626EB075}|BillingSystem\\BillingSystem.csproj|solutionrelative:billingsystem\\frmanalytics.designer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -30,7 +30,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 5,
+          "SelectedChildIndex": 4,
           "Children": [
             {
               "$type": "Bookmark",
@@ -50,66 +50,65 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "CustomerListForm.cs [Design]",
-              "DocumentMoniker": "C:\\Users\\p6900\\source\\repos\\main\\BillingSystem\\CustomerListForm.cs",
-              "RelativeDocumentMoniker": "BillingSystem\\CustomerListForm.cs",
-              "ToolTip": "C:\\Users\\p6900\\source\\repos\\main\\BillingSystem\\CustomerListForm.cs [Design]*",
-              "RelativeToolTip": "BillingSystem\\CustomerListForm.cs [Design]*",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-10-05T06:43:16.497Z",
-              "EditorCaption": " [Design]"
-            },
-            {
-              "$type": "Document",
               "DocumentIndex": 0,
               "Title": "CustomerListForm.cs",
               "DocumentMoniker": "C:\\Users\\p6900\\source\\repos\\main\\BillingSystem\\CustomerListForm.cs",
               "RelativeDocumentMoniker": "BillingSystem\\CustomerListForm.cs",
-              "ToolTip": "C:\\Users\\p6900\\source\\repos\\main\\BillingSystem\\CustomerListForm.cs*",
-              "RelativeToolTip": "BillingSystem\\CustomerListForm.cs*",
-              "ViewState": "AgIAAAABAAAAAAAAAAAUwCYBAAABAAAAAAAAAA==",
+              "ToolTip": "C:\\Users\\p6900\\source\\repos\\main\\BillingSystem\\CustomerListForm.cs",
+              "RelativeToolTip": "BillingSystem\\CustomerListForm.cs",
+              "ViewState": "AgIAAKMBAAAAAAAAAAAuwN8BAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-10-04T11:22:33.896Z",
+              "WhenOpened": "2026-10-11T11:41:51.248Z",
               "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "CustomerListForm.cs [Design]",
+              "DocumentMoniker": "C:\\Users\\p6900\\source\\repos\\main\\BillingSystem\\CustomerListForm.cs",
+              "RelativeDocumentMoniker": "BillingSystem\\CustomerListForm.cs",
+              "ToolTip": "C:\\Users\\p6900\\source\\repos\\main\\BillingSystem\\CustomerListForm.cs [Design]",
+              "RelativeToolTip": "BillingSystem\\CustomerListForm.cs [Design]",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-10-11T10:01:50.258Z",
+              "EditorCaption": " [Design]"
             },
             {
               "$type": "Document",
               "DocumentIndex": 2,
-              "Title": "AddCustomerForm.cs",
-              "DocumentMoniker": "C:\\Users\\p6900\\source\\repos\\main\\BillingSystem\\AddCustomerForm.cs",
-              "RelativeDocumentMoniker": "BillingSystem\\AddCustomerForm.cs",
-              "ToolTip": "C:\\Users\\p6900\\source\\repos\\main\\BillingSystem\\AddCustomerForm.cs",
-              "RelativeToolTip": "BillingSystem\\AddCustomerForm.cs",
-              "ViewState": "AgIAAIQAAAAAAAAAAAAAAJQAAAAVAAAAAAAAAA==",
+              "Title": "frmAnalytics.cs [Design]",
+              "DocumentMoniker": "C:\\Users\\p6900\\source\\repos\\main\\BillingSystem\\frmAnalytics.cs",
+              "RelativeDocumentMoniker": "BillingSystem\\frmAnalytics.cs",
+              "ToolTip": "C:\\Users\\p6900\\source\\repos\\main\\BillingSystem\\frmAnalytics.cs [Design]",
+              "RelativeToolTip": "BillingSystem\\frmAnalytics.cs [Design]",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-10-04T10:58:27.162Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "AddCustomerForm.cs [Design]",
-              "DocumentMoniker": "C:\\Users\\p6900\\source\\repos\\main\\BillingSystem\\AddCustomerForm.cs",
-              "RelativeDocumentMoniker": "BillingSystem\\AddCustomerForm.cs",
-              "ToolTip": "C:\\Users\\p6900\\source\\repos\\main\\BillingSystem\\AddCustomerForm.cs [Design]",
-              "RelativeToolTip": "BillingSystem\\AddCustomerForm.cs [Design]",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-10-04T10:59:11.603Z",
+              "WhenOpened": "2026-10-09T11:43:52.227Z",
               "EditorCaption": " [Design]"
             },
             {
               "$type": "Document",
               "DocumentIndex": 4,
-              "Title": "AddCustomerForm.Designer.cs",
-              "DocumentMoniker": "C:\\Users\\p6900\\source\\repos\\main\\BillingSystem\\AddCustomerForm.Designer.cs",
-              "RelativeDocumentMoniker": "BillingSystem\\AddCustomerForm.Designer.cs",
-              "ToolTip": "C:\\Users\\p6900\\source\\repos\\main\\BillingSystem\\AddCustomerForm.Designer.cs",
-              "RelativeToolTip": "BillingSystem\\AddCustomerForm.Designer.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Title": "frmAnalytics.Designer.cs",
+              "DocumentMoniker": "C:\\Users\\p6900\\source\\repos\\main\\BillingSystem\\frmAnalytics.Designer.cs",
+              "RelativeDocumentMoniker": "BillingSystem\\frmAnalytics.Designer.cs",
+              "ToolTip": "C:\\Users\\p6900\\source\\repos\\main\\BillingSystem\\frmAnalytics.Designer.cs",
+              "RelativeToolTip": "BillingSystem\\frmAnalytics.Designer.cs",
+              "ViewState": "AgIAAKQAAAAAAAAAAAAEwLcAAAAoAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-10-04T10:58:49.895Z",
+              "WhenOpened": "2026-10-09T11:38:56.328Z",
               "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "frmAnalytics.cs",
+              "DocumentMoniker": "C:\\Users\\p6900\\source\\repos\\main\\BillingSystem\\frmAnalytics.cs",
+              "RelativeDocumentMoniker": "BillingSystem\\frmAnalytics.cs",
+              "ToolTip": "C:\\Users\\p6900\\source\\repos\\main\\BillingSystem\\frmAnalytics.cs",
+              "RelativeToolTip": "BillingSystem\\frmAnalytics.cs",
+              "ViewState": "AgIAAM0AAAAAAAAAAAAuwOUAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-10-09T11:27:01.8Z"
             }
           ]
         }

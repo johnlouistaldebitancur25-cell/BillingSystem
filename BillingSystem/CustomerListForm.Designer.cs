@@ -41,6 +41,9 @@
             btnLogout = new Button();
             btnSearch = new Button();
             txtSearch = new TextBox();
+            btnAnalytics = new Button();
+            btnExportExcel = new Button();
+            btnExportPdf = new Button();
             ((System.ComponentModel.ISupportInitialize)dgvCustomers).BeginInit();
             SuspendLayout();
             // 
@@ -158,11 +161,44 @@
             txtSearch.TabIndex = 6;
             txtSearch.KeyPress += txtSearch_KeyPress;
             // 
+            // btnAnalytics
+            // 
+            btnAnalytics.Location = new Point(529, 361);
+            btnAnalytics.Name = "btnAnalytics";
+            btnAnalytics.Size = new Size(155, 29);
+            btnAnalytics.TabIndex = 7;
+            btnAnalytics.Text = " Analytics";
+            btnAnalytics.UseVisualStyleBackColor = true;
+            btnAnalytics.Click += btnAnalytics_Click;
+            // 
+            // btnExportExcel
+            // 
+            btnExportExcel.Location = new Point(315, 361);
+            btnExportExcel.Name = "btnExportExcel";
+            btnExportExcel.Size = new Size(118, 29);
+            btnExportExcel.TabIndex = 8;
+            btnExportExcel.Text = "Export to Excel";
+            btnExportExcel.UseVisualStyleBackColor = true;
+            btnExportExcel.Click += btnExportExcel_Click;
+            // 
+            // btnExportPdf
+            // 
+            btnExportPdf.Location = new Point(98, 361);
+            btnExportPdf.Name = "btnExportPdf";
+            btnExportPdf.Size = new Size(111, 29);
+            btnExportPdf.TabIndex = 9;
+            btnExportPdf.Text = "Export to PDF";
+            btnExportPdf.UseVisualStyleBackColor = true;
+            btnExportPdf.Click += btnExportPdf_Click_1;
+            // 
             // CustomerListForm
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(782, 453);
+            Controls.Add(btnExportPdf);
+            Controls.Add(btnExportExcel);
+            Controls.Add(btnAnalytics);
             Controls.Add(txtSearch);
             Controls.Add(btnSearch);
             Controls.Add(btnLogout);
@@ -194,5 +230,8 @@
         private Button btnLogout;
         private Button btnSearch;
         private TextBox txtSearch;
+        private Button btnAnalytics;
+        private Button btnExportExcel;
+        private Button btnExportPdf;
     }
 }
