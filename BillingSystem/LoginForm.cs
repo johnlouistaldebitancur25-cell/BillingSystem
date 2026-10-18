@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using MySql.Data.MySqlClient;
 using BillingSystem.Database;
+using BillingSystem.Utils;
 
 namespace BillingSystem
 {
@@ -79,7 +80,17 @@ namespace BillingSystem
                         {
                             if (reader.Read())
                             {
-                                // Credentials matched - open the Customer List form
+                                // Populate AppSession with the logged-in user's details
+                                AppSession.CurrentUserID = reader.GetInt32("UserID");
+                                AppSession.CurrentUsername = txtUsername.Text.Trim();
+                                AppSession.CurrentFullName = reader.GetString("FullName");
+                                AppSession.CurrentRole = reader.GetString("Role");
+
+                                // Write a LOGIN audit log entry
+                                AuditLogger.Log("LOGIN",
+                                    $"{AppSession.CurrentFullName} ({AppSession.CurrentRole}) logged in.");
+
+                                // Open the Customer List Form
                                 CustomerListForm listForm = new CustomerListForm();
                                 listForm.Show();
                                 this.Hide();

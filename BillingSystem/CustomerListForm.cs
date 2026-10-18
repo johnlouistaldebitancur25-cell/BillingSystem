@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Data;
+using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
 using MySql.Data.MySqlClient;
 using BillingSystem.Database;
+using BillingSystem.Utils;
 using ClosedXML.Excel;
 using PdfSharp.Pdf;
 using PdfSharp.Drawing;
@@ -12,9 +14,11 @@ namespace BillingSystem
 {
     public partial class CustomerListForm : Form
     {
-        // Step 1.1 — Field to track the selected CustomerID
-        // 0 means no customer is currently selected.
+        // Field to track the selected CustomerID (0 = no selection)
         private int _selectedCustomerId = 0;
+
+        // Step 8.1 — Track edit permission for double-click row handler
+        private bool _canEdit = true;
 
         public CustomerListForm()
         {
@@ -27,7 +31,6 @@ namespace BillingSystem
         {
             dgvCustomers.AutoGenerateColumns = false;
 
-            // Ensure Status column exists in dgvCustomers if not created in Designer
             if (!dgvCustomers.Columns.Contains("Status"))
             {
                 dgvCustomers.Columns.Add("Status", "Status");
@@ -42,22 +45,178 @@ namespace BillingSystem
             dgvCustomers.Columns["Status"].DataPropertyName = "Status";
         }
 
+        // Step 9.2 — Apply Theme, Permissions, and StatusStrip on Load
         private void CustomerListForm_Load(object sender, EventArgs e)
         {
+            ApplyTheme();
             LoadCustomers();
+            ApplyPermissions();
+            InitStatusStrip();
         }
 
-        // Step 1.2 — Capture CustomerID whenever selected row changes
+        // Step 9.2 — Centralized Theme Application
+        private void ApplyTheme()
+        {
+            // Form background
+            this.BackColor = AppTheme.BackgroundColor;
+
+            // Action buttons
+            btnAdd.BackColor = AppTheme.SuccessColor;
+            btnAdd.ForeColor = Color.White;
+            btnDelete.BackColor = AppTheme.DangerColor;
+            btnDelete.ForeColor = Color.White;
+            btnAnalytics.BackColor = AppTheme.PrimaryColor;
+            btnAnalytics.ForeColor = Color.White;
+            btnExportExcel.BackColor = AppTheme.SecondaryColor;
+            btnExportExcel.ForeColor = Color.White;
+            btnExportPdf.BackColor = AppTheme.SecondaryColor;
+            btnExportPdf.ForeColor = Color.White;
+            btnAuditLog.BackColor = AppTheme.SecondaryColor;
+            btnAuditLog.ForeColor = Color.White;
+            btnManagePermissions.BackColor = AppTheme.DangerColor;
+            btnManagePermissions.ForeColor = Color.White;
+
+            // DataGridView header colors
+            dgvCustomers.ColumnHeadersDefaultCellStyle.BackColor = AppTheme.PrimaryColor;
+            dgvCustomers.ColumnHeadersDefaultCellStyle.ForeColor = Color.White;
+            dgvCustomers.ColumnHeadersDefaultCellStyle.Font =
+                new Font("Segoe UI", 9f, FontStyle.Bold);
+
+            // Alternating row colors
+            dgvCustomers.AlternatingRowsDefaultCellStyle.BackColor = AppTheme.GridRowAlt;
+        }
+
+        // Step 9.3 — Highlight Rows by Customer Status
+        private void dgvCustomers_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
+        {
+            // Skip the header row
+            if (e.RowIndex < 0) return;
+
+            // Read Status from the data behind this row
+            var rowData = dgvCustomers.Rows[e.RowIndex].DataBoundItem as DataRowView;
+            string status = rowData?["Status"]?.ToString() ?? "";
+
+            if (status == "Inactive")
+            {
+                // The whole row turns light red
+                e.CellStyle.BackColor = AppTheme.InactiveRowColor;
+            }
+            else if (status == "Active" &&
+                     dgvCustomers.Columns[e.ColumnIndex].DataPropertyName == "Status")
+            {
+                // Only the Status cell turns light green
+                e.CellStyle.BackColor = AppTheme.ActiveRowColor;
+            }
+        }
+
+        // Step 9.1 — Programmatically Rebuilt StatusStrip Layout
+        private void InitStatusStrip()
+        {
+            // Clear designer defaults to prevent label name/index mismatches
+            statusStrip1.Items.Clear();
+
+            // 1. User & Role details pinned to the left
+            var lblUser = new ToolStripStatusLabel
+            {
+                Text = $"User: {AppSession.CurrentFullName}  |  Role: {AppSession.CurrentRole}"
+            };
+
+            // 2. Middle empty spacer label with Spring = true to absorb all open width
+            var lblSpring = new ToolStripStatusLabel
+            {
+                Spring = true
+            };
+
+            // 3. Live clock label pushed flush against the right edge
+            var lblTime = new ToolStripStatusLabel
+            {
+                Name = "lblClockText"
+            };
+
+            statusStrip1.Items.AddRange(new ToolStripItem[] { lblUser, lblSpring, lblTime });
+
+            UpdateClock();
+        }
+
+        private void UpdateClock()
+        {
+            if (statusStrip1 != null && statusStrip1.Items.ContainsKey("lblClockText"))
+            {
+                statusStrip1.Items["lblClockText"].Text =
+                    DateTime.Now.ToString("dddd, MMMM dd yyyy   hh:mm:ss tt");
+            }
+        }
+
+        private void statusTimer_Tick(object sender, EventArgs e)
+        {
+            UpdateClock();
+        }
+
+        // Step 8.1 — Query UserPermissions and enable/disable UI controls
+        private void ApplyPermissions()
+        {
+            try
+            {
+                using (var conn = DatabaseConnection.GetConnection())
+                {
+                    conn.Open();
+                    string sql = @"SELECT PermissionName, IsAllowed
+                                   FROM   UserPermissions
+                                   WHERE  Role = @Role;";
+
+                    using (var cmd = new MySqlCommand(sql, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@Role", AppSession.CurrentRole);
+
+                        using (var reader = cmd.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                string permName = reader.GetString("PermissionName");
+                                bool isAllowed = reader.GetBoolean("IsAllowed");
+
+                                switch (permName)
+                                {
+                                    case "AddCustomer":
+                                        btnAdd.Enabled = isAllowed; break;
+                                    case "EditCustomer":
+                                        _canEdit = isAllowed; break;
+                                    case "DeleteCustomer":
+                                        btnDelete.Enabled = isAllowed; break;
+                                    case "Analytics":
+                                        btnAnalytics.Enabled = isAllowed; break;
+                                    case "ExportExcel":
+                                        btnExportExcel.Enabled = isAllowed; break;
+                                    case "ExportPdf":
+                                        btnExportPdf.Enabled = isAllowed; break;
+                                    case "AuditLogs":
+                                        btnAuditLog.Enabled = isAllowed; break;
+                                    case "ManagePermissions":
+                                        btnManagePermissions.Enabled = isAllowed; break;
+                                }
+                            }
+                        }
+                    }
+
+                    // Display active user and role in the form title bar
+                    this.Text = $"Billing System - Logged in as: {AppSession.CurrentFullName} ({AppSession.CurrentRole})";
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error loading permissions:\n{ex.Message}",
+                    "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
         private void dgvCustomers_SelectionChanged(object sender, EventArgs e)
         {
-            // If no row is selected (e.g., grid is cleared or empty), reset selection
             if (dgvCustomers.CurrentRow == null || dgvCustomers.SelectedRows.Count == 0)
             {
                 _selectedCustomerId = 0;
                 return;
             }
 
-            // Read the CustomerID value from the selected row
             var idCell = dgvCustomers.CurrentRow.Cells["CustomerID"].Value;
 
             if (idCell != null && int.TryParse(idCell.ToString(), out int id))
@@ -70,16 +229,14 @@ namespace BillingSystem
             }
         }
 
-        // Step 1.4 — Open Edit Form when double-clicking a data row
         private void dgvCustomers_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
         {
-            // e.RowIndex is -1 when column header is double-clicked — ignore it
+            if (!_canEdit) return;
             if (e.RowIndex < 0) return;
 
             OpenEditForm();
         }
 
-        // Step 3.3 — Open AddCustomerForm in Edit Mode
         private void OpenEditForm()
         {
             if (_selectedCustomerId == 0)
@@ -89,12 +246,8 @@ namespace BillingSystem
                 return;
             }
 
-            // Open AddCustomerForm in EDIT mode, passing the selected CustomerID
             AddCustomerForm editForm = new AddCustomerForm(_selectedCustomerId);
-
-            // Refresh the grid automatically once the edit form closes
             editForm.FormClosed += (s, args) => LoadCustomers();
-
             editForm.ShowDialog(this);
         }
 
@@ -105,10 +258,8 @@ namespace BillingSystem
             LoadCustomers();
         }
 
-        // Step 5.2 — Confirm Before Deleting
         private void btnDelete_Click(object sender, EventArgs e)
         {
-            // Step 1: Make sure a customer is selected
             if (_selectedCustomerId == 0)
             {
                 MessageBox.Show("Please select a customer to delete.",
@@ -116,7 +267,6 @@ namespace BillingSystem
                 return;
             }
 
-            // Step 2: Confirm before deleting — this cannot be undone
             DialogResult confirm = MessageBox.Show(
                 "Are you sure you want to delete this customer?\n" +
                 "All billing records for this customer will also be deleted.",
@@ -124,14 +274,12 @@ namespace BillingSystem
                 MessageBoxButtons.YesNo,
                 MessageBoxIcon.Warning);
 
-            // Step 3: Only delete if the user clicked Yes
             if (confirm == DialogResult.Yes)
             {
                 DeleteCustomer(_selectedCustomerId);
             }
         }
 
-        // Step 5.1 — Execute Parameterized DELETE Statement
         private void DeleteCustomer(int customerId)
         {
             try
@@ -139,22 +287,22 @@ namespace BillingSystem
                 using (var conn = DatabaseConnection.GetConnection())
                 {
                     conn.Open();
-
-                    // Parameterized DELETE — removes exactly one row
                     string sql = "DELETE FROM Customers WHERE CustomerID = @CustomerID;";
 
                     using (var cmd = new MySqlCommand(sql, conn))
                     {
                         cmd.Parameters.AddWithValue("@CustomerID", customerId);
-
                         int rowsAffected = cmd.ExecuteNonQuery();
 
                         if (rowsAffected > 0)
                         {
+                            AuditLogger.Log("DELETE_CUSTOMER",
+                                $"Customer ID {customerId} deleted by {AppSession.CurrentUsername}.");
+
                             MessageBox.Show("Customer deleted successfully.",
                                 "Deleted", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
-                            LoadCustomers();           // Refresh the grid
+                            LoadCustomers();
                         }
                         else
                         {
@@ -304,21 +452,21 @@ namespace BillingSystem
                 dgvCustomers.Columns["Balance"].FillWeight = 80;
             }
 
-            // Ensures no row is automatically selected when loading/reloading data
             dgvCustomers.ClearSelection();
             _selectedCustomerId = 0;
         }
 
         private void btnAnalytics_Click(object sender, EventArgs e)
         {
+            AuditLogger.Log("VIEW_ANALYTICS",
+                $"{AppSession.CurrentUsername} opened the Analytics Dashboard.");
+
             frmAnalytics analyticsForm = new frmAnalytics();
             analyticsForm.ShowDialog();
         }
 
-        // Step 7.4 — Export DataGridView content to Excel via ClosedXML
         private void btnExportExcel_Click(object sender, EventArgs e)
         {
-            // Make sure there is something to export
             if (dgvCustomers.Rows.Count == 0)
             {
                 MessageBox.Show("There are no records to export.",
@@ -326,7 +474,6 @@ namespace BillingSystem
                 return;
             }
 
-            // Let the user choose where to save the file
             using (SaveFileDialog saveDialog = new SaveFileDialog())
             {
                 saveDialog.Filter = "Excel Workbook (*.xlsx)|*.xlsx";
@@ -340,14 +487,12 @@ namespace BillingSystem
                     {
                         var worksheet = workbook.Worksheets.Add("Customers");
 
-                        // Write column headers in row 1
                         for (int col = 0; col < dgvCustomers.Columns.Count; col++)
                         {
                             worksheet.Cell(1, col + 1).Value = dgvCustomers.Columns[col].HeaderText;
                             worksheet.Cell(1, col + 1).Style.Font.Bold = true;
                         }
 
-                        // Write each data row starting from row 2
                         for (int row = 0; row < dgvCustomers.Rows.Count; row++)
                         {
                             for (int col = 0; col < dgvCustomers.Columns.Count; col++)
@@ -357,11 +502,12 @@ namespace BillingSystem
                             }
                         }
 
-                        // Auto-adjust column widths to fit the content
                         worksheet.Columns().AdjustToContents();
-
                         workbook.SaveAs(saveDialog.FileName);
                     }
+
+                    AuditLogger.Log("EXPORT_EXCEL",
+                        $"{AppSession.CurrentUsername} exported customer list to Excel.");
 
                     MessageBox.Show("Customer list exported successfully to Excel.",
                         "Export Complete", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -374,10 +520,8 @@ namespace BillingSystem
             }
         }
 
-        // Step 8.4 — Export DataGridView content to PDF (Landscape) via PDFsharp
         private void btnExportPdf_Click(object sender, EventArgs e)
         {
-            // Make sure there is something to export
             if (dgvCustomers.Rows.Count == 0)
             {
                 MessageBox.Show("There are no records to export.",
@@ -396,7 +540,6 @@ namespace BillingSystem
                 {
                     using (PdfDocument document = new PdfDocument())
                     {
-                        // Create a new page set to Landscape orientation
                         PdfPage page = document.AddPage();
                         page.Orientation = PdfSharp.PageOrientation.Landscape;
 
@@ -406,7 +549,6 @@ namespace BillingSystem
                             XFont headerFont = new XFont("Arial", 10, XFontStyleEx.Bold);
                             XFont cellFont = new XFont("Arial", 9, XFontStyleEx.Regular);
 
-                            // Title
                             gfx.DrawString("Customer List Report", titleFont, XBrushes.Black,
                                 new XRect(0, 20, page.Width.Point, 30), XStringFormats.TopCenter);
 
@@ -417,7 +559,6 @@ namespace BillingSystem
                             double rowHeight = 22;
                             double y = 60;
 
-                            // Draw column headers
                             double x = margin;
                             for (int col = 0; col < columnCount; col++)
                             {
@@ -430,13 +571,11 @@ namespace BillingSystem
                             y += rowHeight;
                             gfx.DrawLine(XPens.Black, margin, y, page.Width.Point - margin, y);
 
-                            // Draw each data row
                             foreach (DataGridViewRow row in dgvCustomers.Rows)
                             {
                                 x = margin;
                                 y += rowHeight;
 
-                                // Start a new page if we run out of vertical space
                                 if (y > page.Height.Point - margin)
                                 {
                                     page = document.AddPage();
@@ -457,9 +596,12 @@ namespace BillingSystem
                             }
                         }
 
-                        gfx.Dispose();   // finish drawing before saving
+                        gfx.Dispose();
                         document.Save(saveDialog.FileName);
                     }
+
+                    AuditLogger.Log("EXPORT_PDF",
+                        $"{AppSession.CurrentUsername} exported customer list to PDF.");
 
                     MessageBox.Show("Customer list exported successfully to PDF.",
                         "Export Complete", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -475,6 +617,33 @@ namespace BillingSystem
         private void btnExportPdf_Click_1(object sender, EventArgs e)
         {
             btnExportPdf_Click(sender, e);
+        }
+
+        private void btnAuditLog_Click(object sender, EventArgs e)
+        {
+            frmAuditLogs auditForm = new frmAuditLogs();
+            auditForm.ShowDialog(this);
+        }
+
+        private void btnManagePermissions_Click(object sender, EventArgs e)
+        {
+            frmManagePermissions permForm = new frmManagePermissions();
+            permForm.ShowDialog(this);
+        }
+
+        private void btnLogout_Click(object sender, EventArgs e)
+        {
+            AuditLogger.Log("LOGOUT", $"{AppSession.CurrentFullName} ({AppSession.CurrentRole}) logged out.");
+            AppSession.Clear();
+
+            LoginForm loginForm = new LoginForm();
+            loginForm.Show();
+            this.Close();
+        }
+
+        private void statusStrip1_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
+        {
+
         }
     }
 }
