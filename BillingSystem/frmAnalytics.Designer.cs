@@ -152,6 +152,7 @@
             btnCloseAnalytics.TabIndex = 8;
             btnCloseAnalytics.Text = "Close";
             btnCloseAnalytics.UseVisualStyleBackColor = true;
+            btnCloseAnalytics.Click += btnCloseAnalytics_Click;
             // 
             // frmAnalytics
             // 

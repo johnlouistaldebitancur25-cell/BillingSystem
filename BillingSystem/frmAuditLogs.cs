@@ -100,26 +100,43 @@ namespace BillingSystem
             }
         }
 
-        private void btnSearch_Click(object sender, EventArgs e)
+        private bool ValidateDateRange()
         {
             if (dtpFrom.Value.Date > dtpTo.Value.Date)
             {
                 MessageBox.Show("Start date cannot be later than end date.",
                     "Invalid Date Range", MessageBoxButtons.OK,
                     MessageBoxIcon.Warning);
-                return;
+                return false;
             }
+            return true;
+        }
+
+        private void btnSearch_Click(object sender, EventArgs e)
+        {
+            if (!ValidateDateRange()) return;
             LoadAuditLogs(dtpFrom.Value, dtpTo.Value);
+        }
+
+        private void dtpFrom_ValueChanged(object sender, EventArgs e)
+        {
+            if (dtpFrom.Value.Date > dtpTo.Value.Date)
+            {
+                ValidateDateRange();
+            }
+        }
+
+        private void dtpTo_ValueChanged(object sender, EventArgs e)
+        {
+            if (dtpFrom.Value.Date > dtpTo.Value.Date)
+            {
+                ValidateDateRange();
+            }
         }
 
         private void btnClose_Click(object sender, EventArgs e)
         {
             this.Close();
-        }
-
-        private void dtpFrom_ValueChanged(object sender, EventArgs e)
-        {
-
         }
     }
 }

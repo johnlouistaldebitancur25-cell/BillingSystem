@@ -645,5 +645,41 @@ namespace BillingSystem
         {
 
         }
+
+        private void btnChangePassword_Click(object sender, EventArgs e)
+        {
+            int currentUserId = AppSession.CurrentUserID;
+
+            using (frmChangePassword changePasswordForm = new frmChangePassword(currentUserId))
+            {
+                changePasswordForm.ShowDialog(this);
+            }
+        }
+
+        private void btnViewBilling_Click(object sender, EventArgs e)
+        {
+            if (dgvCustomers.SelectedRows.Count == 0)
+            {
+                MessageBox.Show(
+            "Please select a customer from the list first to view their billing history.",
+            "No Customer Selected",
+            MessageBoxButtons.OK,
+            MessageBoxIcon.Warning
+        );
+                return;
+            }
+            /// Retrieve selected CustomerID from the selected row
+            DataGridViewRow selectedRow = dgvCustomers.SelectedRows[0];
+
+            if (selectedRow.Cells["CustomerID"].Value != null &&
+                int.TryParse(selectedRow.Cells["CustomerID"].Value.ToString(), out int selectedCustomerId))
+            {
+
+                using (frmBillingHistory billingForm = new frmBillingHistory(selectedCustomerId))
+                {
+                    billingForm.ShowDialog(this);
+                }
+            }
+        }
     }
 }

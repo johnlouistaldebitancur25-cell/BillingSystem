@@ -174,6 +174,7 @@
             btnBack.TabIndex = 14;
             btnBack.Text = "Back";
             btnBack.UseVisualStyleBackColor = true;
+            btnBack.Click += btnBack_Click;
             // 
             // AddCustomerForm
             // 

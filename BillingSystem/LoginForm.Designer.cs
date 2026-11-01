@@ -46,11 +46,12 @@
             lblTitle.Size = new Size(194, 31);
             lblTitle.TabIndex = 0;
             lblTitle.Text = "BILLING SYSTEM";
+            lblTitle.Click += lblTitle_Click;
             // 
             // lblUsername
             // 
             lblUsername.AutoSize = true;
-            lblUsername.Location = new Point(67, 62);
+            lblUsername.Location = new Point(67, 76);
             lblUsername.Name = "lblUsername";
             lblUsername.Size = new Size(78, 20);
             lblUsername.TabIndex = 1;
@@ -59,14 +60,14 @@
             // 
             // txtUsername
             // 
-            txtUsername.Location = new Point(151, 56);
+            txtUsername.Location = new Point(146, 73);
             txtUsername.Name = "txtUsername";
             txtUsername.Size = new Size(125, 27);
             txtUsername.TabIndex = 2;
             // 
             // txtPassword
             // 
-            txtPassword.Location = new Point(150, 100);
+            txtPassword.Location = new Point(146, 120);
             txtPassword.Name = "txtPassword";
             txtPassword.PasswordChar = '*';
             txtPassword.Size = new Size(125, 27);
@@ -75,7 +76,7 @@
             // lblPassword
             // 
             lblPassword.AutoSize = true;
-            lblPassword.Location = new Point(67, 103);
+            lblPassword.Location = new Point(67, 123);
             lblPassword.Name = "lblPassword";
             lblPassword.Size = new Size(73, 20);
             lblPassword.TabIndex = 4;
@@ -83,7 +84,8 @@
             // 
             // btnLogin
             // 
-            btnLogin.Location = new Point(67, 155);
+            btnLogin.FlatStyle = FlatStyle.Popup;
+            btnLogin.Location = new Point(67, 168);
             btnLogin.Name = "btnLogin";
             btnLogin.Size = new Size(94, 29);
             btnLogin.TabIndex = 5;
@@ -93,7 +95,8 @@
             // 
             // btnCancel
             // 
-            btnCancel.Location = new Point(182, 155);
+            btnCancel.FlatStyle = FlatStyle.Popup;
+            btnCancel.Location = new Point(182, 168);
             btnCancel.Name = "btnCancel";
             btnCancel.Size = new Size(94, 29);
             btnCancel.TabIndex = 6;
