@@ -8,7 +8,12 @@ namespace BillingSystem
     public partial class frmBillingHistory : Form
     {
         private readonly int _customerId;
-        private readonly string connectionString = "Server=localhost;Database=BillingDB;Uid=root;Password=App_Dev_@Grp6;";
+
+        // Updated to point to the host server IP (10.0.0.32) and remote user credentials
+        private readonly string connectionString = "Server=10.0.0.32;Database=BillingDB;Uid=billing_user;Password=BillingPass123!;";
+
+        // ALTERNATIVE (if you use a central connection helper class):
+        // private readonly string connectionString = DatabaseConnection.ConnectionString;
 
         public frmBillingHistory(int customerId)
         {
@@ -58,7 +63,6 @@ namespace BillingSystem
 
         /// <summary>
         /// Loads billing records filtered by CustomerID into the DataGridView.
-        /// Handles Popup 2 when zero records are returned.
         /// </summary>
         private void LoadBillingHistory()
         {
@@ -94,7 +98,7 @@ namespace BillingSystem
                     if (dgvBillingHistory.Columns["Total Amount"] != null)
                         dgvBillingHistory.Columns["Total Amount"].DefaultCellStyle.Format = "C2";
 
-                    // Popup 2: Zero Billing Records Found
+                    // Zero Billing Records Found
                     if (dt.Rows.Count == 0)
                     {
                         MessageBox.Show(

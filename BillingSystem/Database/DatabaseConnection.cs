@@ -6,11 +6,11 @@ namespace BillingSystem.Database
     // This class provides a reusable database connection.
     public class DatabaseConnection
     {
-        // Connection string settings — update Password if needed
-        private const string SERVER = "localhost";
-        private const string DATABASE = "BillingDB";
-        private const string UID = "root";
-        private const string PASSWORD = "App_Dev_@Grp6"; // Update inside quotes if your password differs
+        // Connection string settings — updated for remote network access
+        private const string SERVER = "10.0.0.32";
+        private const string DATABASE = "billingdb";
+        private const string UID = "billing_user";
+        private const string PASSWORD = "BillingPass123!";
 
         private static string ConnectionString =>
             $"server={SERVER};database={DATABASE};uid={UID};pwd={PASSWORD};";
