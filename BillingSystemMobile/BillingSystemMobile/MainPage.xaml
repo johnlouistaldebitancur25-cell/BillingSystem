@@ -20,12 +20,6 @@
             <Picker x:Name="pickerCustomer"
                     Title="Select a Customer"
                     FontSize="14">
-                <Picker.Items>
-                    <x:String>Juan Dela Cruz</x:String>
-                    <x:String>Maria Santos</x:String>
-                    <x:String>Pedro Reyes</x:String>
-                    <x:String>Ana Lopez</x:String>
-                </Picker.Items>
             </Picker>
 
             <!-- Billing Month -->
